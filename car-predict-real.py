@@ -10,8 +10,32 @@ from sklearn.metrics import mean_squared_error
 # -------------------------------
 # 1. PAGE CONFIGURATION
 # -------------------------------
-st.set_page_config(page_title="Car Price Predictor", layout="wide")
+st.set_page_config(page_title="🚗 Car Price Predictor", layout="wide", page_icon="🚘")
 st.title("🚗 Car Price Prediction App")
+st.markdown("""
+<style>
+    .main {
+        background-color: #f7f9fc;
+        color: #222;
+    }
+    h1, h2, h3, h4 {
+        color: #0a3d62;
+    }
+    .stButton>button {
+        background-color: #0a3d62;
+        color: white;
+        border-radius: 10px;
+        height: 3em;
+        width: 100%;
+        font-weight: bold;
+    }
+    .stButton>button:hover {
+        background-color: #1e3799;
+        color: #fff;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 st.write("A simple interactive demo using Streamlit + Scikit-learn with real data")
 
 # -------------------------------
@@ -39,14 +63,13 @@ def load_data(n=200):
 n = 210
 df = load_data(n)
 st.subheader("📊 Loaded Data")
-st.dataframe(df.head(n))
+st.dataframe(df.head(n), use_container_width=True)
 
 # -------------------------------
 # 3. INTERACTIVE VISUALIZATION
 # -------------------------------
 st.subheader("📈 Data Visualization with Filters")
 
-# Sidebar filters
 st.sidebar.header("🔍 Filters")
 
 year_min, year_max = int(df["year"].min()), int(df["year"].max())
@@ -69,28 +92,27 @@ st.write(f"Showing {len(filtered_df)} cars that match your filters.")
 col1, col2 = st.columns(2)
 
 with col1:
-    st.write("**Horsepower vs Price**")
+    st.markdown("**Horsepower vs Price**")
     fig, ax = plt.subplots()
-    ax.scatter(filtered_df["horsepower"], filtered_df["price"], alpha=0.6)
+    ax.scatter(filtered_df["horsepower"], filtered_df["price"], alpha=0.6, color="#1e90ff")
     ax.set_xlabel("Horsepower")
     ax.set_ylabel("Price ($)")
     ax.set_title("Filtered by Year, Horsepower & Mileage")
-    st.pyplot(fig)
+    st.pyplot(fig, use_container_width=True)
 
 with col2:
-    st.write("**Mileage vs Price**")
+    st.markdown("**Mileage vs Price**")
     fig, ax = plt.subplots()
-    ax.scatter(filtered_df["mileage"], filtered_df["price"], alpha=0.6, color="orange")
+    ax.scatter(filtered_df["mileage"], filtered_df["price"], alpha=0.6, color="#ffa502")
     ax.set_xlabel("Mileage")
     ax.set_ylabel("Price ($)")
     ax.set_title("Filtered by Year, Horsepower & Mileage")
-    st.pyplot(fig)
+    st.pyplot(fig, use_container_width=True)
 
-st.write("**Correlation Heatmap**")
+st.markdown("**Correlation Heatmap**")
 fig, ax = plt.subplots(figsize=(4, 3))
-fig.tight_layout()
 sns.heatmap(filtered_df.corr(), annot=True, fmt=".2f", cmap="coolwarm", ax=ax, annot_kws={"size": 6}, cbar_kws={"shrink": 0.4})
-st.pyplot(fig)
+st.pyplot(fig, use_container_width=True)
 
 # -------------------------------
 # 4. TRAIN MODEL
@@ -106,7 +128,7 @@ preds = model.predict(X_test)
 mse = mean_squared_error(y_test, preds)
 
 st.subheader("🧮 Model Performance")
-st.write(f"Mean Squared Error: **{mse:,.2f}**")
+st.success(f"Mean Squared Error: **{mse:,.2f}**")
 
 # -------------------------------
 # 5. USER INPUT & PREDICTION
